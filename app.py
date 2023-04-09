@@ -194,6 +194,13 @@ def update_ticket_prices():
         show.ticket_price *= 0.8  # Decrease the ticket price by 20%
         db.session.commit()
 
+from flask import render_template, request, redirect, url_for
+from app import app
+
+@app.route('/update_prices')
+def update_prices():
+    update_ticket_prices()
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
