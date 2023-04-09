@@ -56,38 +56,3 @@ class VenueList(Resource):
         return {'status': 'success'}
 
  
-# Define a dictionary that specifies the fields to include in responses
-venue_fields = {
-    'id': fields.Integer,
-    'name': fields.String,
-    'location': fields.String,
-    'shows': fields.List(fields.String)
-}
-
-show_fields = {
-    'id': fields.Integer,
-    'title': fields.String,
-    'description': fields.String,
-    'venue': fields.String(attribute=lambda show: show.venue.name),
-    'engagements': fields.List(fields.Nested({
-        'id': fields.Integer,
-        'date': fields.DateTime,
-        'attendance': fields.Integer
-    }))
-}
-
-class VenueAPI(Resource):
-    @marshal_with(venue_fields)
-    def get(self, venue_id):
-        venue = Venue.query.get(venue_id)
-        if not venue:
-            abort(404, message=f'Venue {venue_id} not found')
-        return venue
-
-class ShowAPI(Resource):
-    @marshal_with(show_fields)
-    def get(self, show_id):
-        show = Show.query.get(show_id)
-        if not show:
-            abort(404, message=f'Show {show_id} not found')
-        return show
