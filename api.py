@@ -3,7 +3,7 @@ from flask_restful import Resource
 from flask_restful import Resource, Api, reqparse
 from sqlalchemy import create_engine
 from json import dumps
-from models import db, Show, Venue
+# from models import db, Show, Venue
 from flask import jsonify
 from flask import Flask
 
@@ -209,3 +209,6 @@ class ShowAPI(Resource):
     
     if __name__ == '__main__':
         app.run(debug=True)
+
+
+from models import db, Show, Venue

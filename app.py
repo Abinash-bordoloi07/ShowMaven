@@ -5,7 +5,7 @@ from flask_restful import Api
 from api import VenueAPI, ShowAPI
 import matplotlib.pyplot as plt
 from flask_bootstrap import Bootstrap
-from models import db, Venue, Show , Engagement, Ticket, User
+from models import db, Venue, Show , Engagement, Ticket
 import csv
 from flask_login import current_user,LoginManager
 
