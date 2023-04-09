@@ -3,10 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, session
 from flask_restful import Api
 from api import VenueAPI, ShowAPI
-import matplotlib as plt
+import matplotlib.pyplot as plt
+from flask_bootstrap import Bootstrap
 app = Flask(__name__)
 app.secret_key = 'secret'
 
+
+bootstrap = Bootstrap(app)
 # Define the routes
 @app.route('/')
 def home():
