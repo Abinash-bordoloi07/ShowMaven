@@ -86,3 +86,33 @@ def create_show():
 #     show = Show.query.get_or_404(id)
 #     venues = Venue.query.all()
 #     if
+
+
+@app.route('/book-ticket/<int:show_id>', methods=['GET', 'POST'])
+def book_ticket(show_id):
+    show = Show.query.get(show_id)
+    if not show:
+        flash('Show not found.')
+        return redirect(url_for('home'))
+
+    if request.method == 'POST':
+        num_tickets = int(request.form['num_tickets'])
+        if num_tickets <= 0:
+            flash('Please select a valid number of tickets.')
+            return redirect(url_for('book_ticket', show_id=show_id))
+
+        available_seats = show.get_available_seats()
+        if num_tickets > available_seats:
+            flash('Sorry, only {} seats are available for this show.'.format(available_seats))
+            return redirect(url_for('book_ticket', show_id=show_id))
+
+        user_id = current_user.id
+        for i in range(num_tickets):
+            ticket = Ticket(user_id=user_id, show_id=show_id)
+            db.session.add(ticket)
+        db.session.commit()
+
+        flash('Booking successful!')
+        return redirect(url_for('user'))
+
+    return render_template('book_ticket.html', show=show)
