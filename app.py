@@ -5,6 +5,8 @@ from flask_restful import Api
 from api import VenueAPI, ShowAPI
 import matplotlib.pyplot as plt
 from flask_bootstrap import Bootstrap
+from models import db, Venue, Artist, Show, Engagement
+import csv
 app = Flask(__name__)
 app.secret_key = 'secret'
 
@@ -183,7 +185,7 @@ def search_results():
     return render_template('search_results.html', shows=shows)
 
 
-from app import db, Venue, Show
+
 
 
 
@@ -205,8 +207,6 @@ def update_ticket_prices():
         show.ticket_price *= 0.8  # Decrease the ticket price by 20%
         db.session.commit()
 
-from flask import render_template, request, redirect, url_for
-from app import app
 
 # @app.route('/update_prices')
 # def update_prices():
