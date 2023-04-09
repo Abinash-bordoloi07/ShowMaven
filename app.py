@@ -170,6 +170,15 @@ def book_ticket(show_id):
 def search():
     return render_template('search.html')
 
+@app.route('/search_results', methods=['POST'])
+def search_results():
+    location = request.form.get('location')
+    tags = request.form.get('tags')
+    rating = request.form.get('rating')
+    shows = Show.query.filter_by(location=location, tags=tags, rating=rating).all()
+    return render_template('search_results.html', shows=shows)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
