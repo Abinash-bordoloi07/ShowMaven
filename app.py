@@ -1,7 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
-
 from flask import Flask, render_template, request, redirect, session
+from flask_restful import Api
+from api import VenueAPI, ShowAPI
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -202,6 +203,14 @@ def update_prices():
     update_ticket_prices()
     return redirect(url_for('home'))
 
+
+api = Api(app)
+
+# register VenueAPI resource at /api/venues/<venue_id>
+api.add_resource(VenueAPI, '/api/venues/<int:venue_id>')
+
+# register ShowAPI resource at /api/shows/<show_id>
+api.add_resource(ShowAPI, '/api/shows/<int:show_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
