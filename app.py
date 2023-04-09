@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, redirect, session
 from flask_restful import Api
 from api import VenueAPI, ShowAPI
-
+import matplotlib as plt
 app = Flask(__name__)
 app.secret_key = 'secret'
 
@@ -182,6 +182,13 @@ def search_results():
 
 from app import db, Venue, Show
 
+
+
+@app.route('/update_prices')
+def update_prices():
+    update_ticket_prices()
+    return redirect(url_for('home'))
+
 def update_ticket_prices():
     # Define your pricing model here
     # For example, you can increase the ticket prices by a certain percentage for popular shows
@@ -198,10 +205,10 @@ def update_ticket_prices():
 from flask import render_template, request, redirect, url_for
 from app import app
 
-@app.route('/update_prices')
-def update_prices():
-    update_ticket_prices()
-    return redirect(url_for('home'))
+# @app.route('/update_prices')
+# def update_prices():
+#     update_ticket_prices()
+#     return redirect(url_for('home'))
 
 
 api = Api(app)
@@ -211,6 +218,49 @@ api.add_resource(VenueAPI, '/api/venues/<int:venue_id>')
 
 # register ShowAPI resource at /api/shows/<show_id>
 api.add_resource(ShowAPI, '/api/shows/<int:show_id>')
+
+
+
+@app.route('/export', methods=['GET', 'POST'])
+def export_data():
+    if request.method == 'POST':
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
+        # Retrieve engagement data from database for the given date range
+        engagement_data = db.session.query(Show.title, Venue.name, Engagement.date, Engagement.attendance).\
+            join(Venue).\
+            join(Engagement).\
+            filter(Engagement.date >= start_date, Engagement.date <= end_date).\
+            order_by(Engagement.date).all()
+        
+        # Export engagement data to CSV file
+        with open('engagement_data.csv', 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['Show Title', 'Venue Name', 'Date', 'Attendance'])
+            for row in engagement_data:
+                writer.writerow(row)
+        
+        # Generate plot of attendance trends for each venue
+        venues = db.session.query(Venue).all()
+        for venue in venues:
+            attendance_data = db.session.query(Engagement.date, Engagement.attendance).\
+                join(Venue).\
+                filter(Venue.id == venue.id, Engagement.date >= start_date, Engagement.date <= end_date).\
+                order_by(Engagement.date).all()
+            dates = [str(date) for date, attendance in attendance_data]
+            attendance = [attendance for date, attendance in attendance_data]
+            plt.plot(dates, attendance)
+            plt.title(f'Attendance Trends for {venue.name}')
+            plt.xlabel('Date')
+            plt.ylabel('Attendance')
+            plt.savefig(f'{venue.name}_attendance.png')
+            plt.clf()
+        
+        flash('Data exported successfully')
+        return redirect(url_for('home'))
+
+    return render_template('export.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
