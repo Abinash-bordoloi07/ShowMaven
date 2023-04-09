@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask_restful import Resource, Api, reqparse
+from flask_restful import Resource, Api, reqparse,  marshal_with , abort
 from sqlalchemy import create_engine
 from json import dumps
 # Create SQLAlchemy engine to connect to the database
@@ -12,7 +12,7 @@ venue_parser.add_argument('location', type=str, help='Location of the venue')
 venue_parser.add_argument('capacity', type=int, help='Capacity of the venue')
 
 # Define a resource for venues
-class Venue(Resource):
+class VenueAPI(Resource):
     def get(self, venue_id):
         # Retrieve a venue by its ID
         conn = db_connect.connect()
@@ -54,3 +54,40 @@ class VenueList(Resource):
         capacity = args['capacity']
         query = conn.execute("INSERT INTO venues (name, location, capacity) VALUES (?, ?, ?)", (name, location, capacity))
         return {'status': 'success'}
+
+ 
+# Define a dictionary that specifies the fields to include in responses
+venue_fields = {
+    'id': fields.Integer,
+    'name': fields.String,
+    'location': fields.String,
+    'shows': fields.List(fields.String)
+}
+
+show_fields = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'description': fields.String,
+    'venue': fields.String(attribute=lambda show: show.venue.name),
+    'engagements': fields.List(fields.Nested({
+        'id': fields.Integer,
+        'date': fields.DateTime,
+        'attendance': fields.Integer
+    }))
+}
+
+class VenueAPI(Resource):
+    @marshal_with(venue_fields)
+    def get(self, venue_id):
+        venue = Venue.query.get(venue_id)
+        if not venue:
+            abort(404, message=f'Venue {venue_id} not found')
+        return venue
+
+class ShowAPI(Resource):
+    @marshal_with(show_fields)
+    def get(self, show_id):
+        show = Show.query.get(show_id)
+        if not show:
+            abort(404, message=f'Show {show_id} not found')
+        return show
