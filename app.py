@@ -5,17 +5,25 @@ from flask_restful import Api
 from api import VenueAPI, ShowAPI
 import matplotlib.pyplot as plt
 from flask_bootstrap import Bootstrap
-from models import db, Venue, Artist, Show, Engagement
+from models import db, Venue, Show , Engagement, Ticket, User
 import csv
+from flask_login import current_user,LoginManager
+
 app = Flask(__name__)
-app.secret_key = 'secret'
-
-
+app.config['SECRET_KEY'] = 'I am Abinash Welcome to my app'
+# app.secret_key = 'I am Abinash Welcome to my app'
+login_manager = LoginManager(app)
+login_manager.init_app(app)
 bootstrap = Bootstrap(app)
+
+
+
+
+
 # Define the routes
 @app.route('/')
 def home():
-    return render_template('home.html')
+     return render_template('home.html', current_user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -161,11 +169,11 @@ def book_ticket(show_id):
             flash('Sorry, only {} seats are available for this show.'.format(available_seats))
             return redirect(url_for('book_ticket', show_id=show_id))
 
-        # user_id = current_user.id
-        # for i in range(num_tickets):
-        #     ticket = Ticket(user_id=user_id, show_id=show_id)
-        #     db.session.add(ticket)
-        # db.session.commit()
+        user_id = current_user.id
+        for i in range(num_tickets):
+            ticket = Ticket(user_id=user_id, show_id=show_id)
+            db.session.add(ticket)
+        db.session.commit()
 
         flash('Booking successful!')
         return redirect(url_for('user'))
