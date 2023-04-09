@@ -179,6 +179,22 @@ def search_results():
     return render_template('search_results.html', shows=shows)
 
 
+from app import db, Venue, Show
+
+def update_ticket_prices():
+    # Define your pricing model here
+    # For example, you can increase the ticket prices by a certain percentage for popular shows
+    # You can also decrease the ticket prices for less popular shows to encourage more bookings
+    popular_shows = Show.query.filter_by(popularity=True).all()
+    for show in popular_shows:
+        show.ticket_price *= 1.2  # Increase the ticket price by 20%
+        db.session.commit()
+    less_popular_shows = Show.query.filter_by(popularity=False).all()
+    for show in less_popular_shows:
+        show.ticket_price *= 0.8  # Decrease the ticket price by 20%
+        db.session.commit()
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
