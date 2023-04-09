@@ -1,7 +1,56 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 
+from flask import Flask, render_template, request, redirect, session
+
 app = Flask(__name__)
+app.secret_key = 'secret'
+
+# Define the routes
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Check if the username and password are correct
+        username = request.form['username']
+        password = request.form['password']
+        if username == 'admin' and password == 'password':
+            # Set the session variable for the admin user
+            session['admin'] = True
+            return redirect('/admin')
+        else:
+            # Set the session variable for the regular user
+            session['admin'] = False
+            session['username'] = username
+            return redirect('/user')
+    else:
+        return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    # Clear the session variables
+    session.clear()
+    return redirect('/')
+
+@app.route('/admin')
+def admin():
+    # Check if the user is an admin
+    if not session.get('admin'):
+        return redirect('/')
+    return render_template('admin.html')
+
+@app.route('/user')
+def user():
+    # Check if the user is a regular user
+    if session.get('admin'):
+        return redirect('/')
+    username = session.get('username')
+    return render_template('user.html', username=username)
+
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ticket_booking.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'your_secret_key'
@@ -106,13 +155,21 @@ def book_ticket(show_id):
             flash('Sorry, only {} seats are available for this show.'.format(available_seats))
             return redirect(url_for('book_ticket', show_id=show_id))
 
-        user_id = current_user.id
-        for i in range(num_tickets):
-            ticket = Ticket(user_id=user_id, show_id=show_id)
-            db.session.add(ticket)
-        db.session.commit()
+        # user_id = current_user.id
+        # for i in range(num_tickets):
+        #     ticket = Ticket(user_id=user_id, show_id=show_id)
+        #     db.session.add(ticket)
+        # db.session.commit()
 
         flash('Booking successful!')
         return redirect(url_for('user'))
 
     return render_template('book_ticket.html', show=show)
+
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
