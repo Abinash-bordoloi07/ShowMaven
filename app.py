@@ -84,6 +84,7 @@ class Show(db.Model):
     tags = db.Column(db.String(100), nullable=False)
     ticket_price = db.Column(db.Float, nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
+db.create_all()
 
 @app.route('/admin/venues')
 def venues():
