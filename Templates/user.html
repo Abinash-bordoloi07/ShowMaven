@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h2>User Dashboard</h2>
+      <p>Welcome, {{ current_user.username }}</p>
+      <ul>
+        <li><a href="{{ url_for('search_venue') }}">Search for a venue</a></li>
+        <li><a href="{{ url_for('search_show') }}">Search for a show</a></li>
+        <li><a href="{{ url_for('book_ticket') }}">Book a ticket</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

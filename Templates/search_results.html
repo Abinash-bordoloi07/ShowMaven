@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Search Results</h1>
+    {% if shows %}
+        <ul>
+            {% for show in shows %}
+                <li>{{ show.name }} - {{ show.venue.name }} - {{ show.rating }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+{% endblock %}
