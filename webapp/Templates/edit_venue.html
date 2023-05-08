@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Edit Venue</h1>
+  <form action="{{ url_for('update_venue', venue_id=venue.id) }}" method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.name.label }} {{ form.name(class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.place.label }} {{ form.place(class_="form-control") }}
+    </div>
+    <div class="form-group">
+      {{ form.capacity.label }} {{ form.capacity(class_="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+{% endblock %}

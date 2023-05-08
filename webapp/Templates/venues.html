@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block content %}
+<h1>Venues</h1>
+<ul>
+  {% for venue in venues %}
+  <li>
+    {{ venue.name }} - {{ venue.place }} - {{ venue.capacity }} -
+    <a href="{{ url_for('edit_venue', venue_id=venue.id) }}">Edit</a>
+  </li>
+  {% else %}
+  <li>No venues found</li>
+  {% endfor %}
+</ul>
+<a href="{{ url_for('create_venue') }}">Create new venue</a>
+{% endblock %}
