@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Edit Show</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.name.label }} {{ form.name() }}
+    </div>
+    <div class="form-group">
+      {{ form.rating.label }} {{ form.rating() }}
+    </div>
+    <div class="form-group">
+      {{ form.tags.label }} {{ form.tags() }}
+    </div>
+    <div class="form-group">
+      {{ form.ticket_price.label }} {{ form.ticket_price() }}
+    </div>
+    <div class="form-group">
+      {{ form.venue_id.label }} {{ form.venue_id() }}
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+  </form>
+{% endblock %}
