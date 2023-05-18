@@ -12,6 +12,3 @@ class Show(db.Model):
     def __repr__(self):
         return f'<Show {self.name}>'
 
-
-class SearchForm(FlaskForm):
-    search = StringField('Search', validators=[DataRequired()])

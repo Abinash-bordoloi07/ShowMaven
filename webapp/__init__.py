@@ -1,15 +1,36 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_bootstrap import Bootstrap
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ShowMaven.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'abinash_Showmaven' 
+# Initialize Flask extensions
+db = SQLAlchemy()
+migrate = Migrate()
+login_manager = LoginManager()
+bootstrap = Bootstrap()
 
-db = SQLAlchemy(app)
-login_manager = LoginManager(app)
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+def create_app(config_class):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
 
-from webapp import routes
+    # Initialize Flask extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login_manager.init_app(app)
+    bootstrap.init_app(app)
+
+    # Register blueprints for routes
+    from .routes.admin import admin_bp
+    from .routes.user import user_bp
+    from .routes.home import home_bp
+
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(user_bp)
+    app.register_blueprint(home_bp)
+
+
+    # Import models to create database tables
+    from .models import user, venue, show, ticket
+
+    return app
