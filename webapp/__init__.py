@@ -15,6 +15,7 @@ def create_app(config_class):
     app.config.from_object(config_class)
 
     # Initialize Flask extensions
+
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
@@ -24,13 +25,47 @@ def create_app(config_class):
     from .routes.admin import admin_bp
     from .routes.user import user_bp
     from .routes.home import home_bp
+    from .routes.auth import auth_bp
 
     app.register_blueprint(admin_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(home_bp)
+    app.register_blueprint(auth_bp)
 
 
+
+
+    
     # Import models to create database tables
     from .models import user, venue, show, ticket
 
     return app
+
+
+
+
+# def create_app(config_class):
+#     app = Flask(__name__)
+#     app.config.from_object(config_class)
+
+#     # Initialize Flask extensions
+#     db.init_app(app)
+#     migrate.init_app(app, db)
+#     login_manager.init_app(app)
+#     bootstrap.init_app(app)
+
+#     # Register blueprints for routes
+#     from .routes.admin import admin_bp
+#     from .routes.user import user_bp
+#     from .routes.home import home_bp
+
+#     app.register_blueprint(admin_bp)
+#     app.register_blueprint(user_bp)
+#     app.register_blueprint(home_bp)
+
+
+#     # Import models to create database tables
+#     from .models import user, venue, show, ticket
+
+#     return app
+
