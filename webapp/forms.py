@@ -75,3 +75,38 @@ class EditProfileForm(FlaskForm):
     submit = SubmitField('Update')
     
 
+
+class BookingForm(FlaskForm):
+    show_id = IntegerField('Show ID', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    submit = SubmitField('Book Ticket')
+
+class EditVenueForm(FlaskForm):
+    name = StringField('Venue Name', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    state = StringField('State', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    phone = StringField('Phone', validators=[DataRequired()])
+    image_link = StringField('Image Link')
+    website = StringField('Website')
+    facebook_link = StringField('Facebook Link')
+    seeking_talent = StringField('Seeking Talent')
+    seeking_description = StringField('Seeking Description')
+    genres = StringField('Genres', validators=[DataRequired()])
+    submit = SubmitField('Update Venue')
+
+class EditShowForm(FlaskForm):
+    artist_id = IntegerField('Artist ID', validators=[DataRequired()])
+    venue_id = IntegerField('Venue ID', validators=[DataRequired()])
+    start_time = StringField('Start Time', validators=[DataRequired()])
+    submit = SubmitField('Update Show')
+
+class EditTicketForm(FlaskForm):
+    show_id = IntegerField('Show ID', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    submit = SubmitField('Update Ticket')
+    
+class EditBookingForm(FlaskForm):
+    show_id = IntegerField('Show ID', validators=[DataRequired()])
+    quantity = IntegerField('Quantity', validators=[DataRequired()])
+    submit = SubmitField('Update Booking')

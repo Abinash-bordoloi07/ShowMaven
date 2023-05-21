@@ -1,0 +1,53 @@
+
+{% extends 'admin/index.html' %}
+{% block title %}Tickets{% endblock %}
+{% block content %}
+<div class="container">
+    
+    <div class="row">
+        <div class="col-md-12">
+
+            <h1>Tickets</h1>
+            <hr>
+            <a href="{{ url_for('admin.create_ticket') }}" class="btn btn-primary btn-lg">Create Ticket</a>
+            <hr>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>    
+                        <th>Price</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Venue</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+
+                        <tr>
+                            <td>{{ ticket.name }}</td>
+                            <td>{{ ticket.description }}</td>   
+                            <td>{{ ticket.price }}</td>
+                            <td>{{ ticket.date }}</td>
+                            <td>{{ ticket.time }}</td>
+                            <td>{{ ticket.venue }}</td>
+                            <td><img src="{{ url_for('static', filename='images/' + ticket.image) }}" alt="{{ ticket.name }}" class="img-fluid"></td>
+                            <td>
+
+                                <a href="{{ url_for('admin.edit_ticket', id=ticket.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{{ url_for('admin.delete_ticket', id=ticket.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
